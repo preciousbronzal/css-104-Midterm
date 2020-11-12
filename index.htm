@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		html, body {
+			margin: 0px;
+			padding: 0px;
+		}
+		.main_wrapper {
+			width: 100%;
+			height: 100%;
+		}
+		.cell {
+			width: 20px; height: 20px; background-color: yellow; border: 2px solid black; float: left;
+		}
+	</style>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+	<script>
+		var PLAYER_1 = 0;
+		var PLAYER_2 = 1;
+		var colors = ["blue", "red"]
+		var game_info = {
+			currentPlayer : PLAYER_1,
+			size : 20,
+			winCount : 4,
+			winArray: [],
+			scores : {
+				player1 : 0,
+				player2 : 0
+			},
+
+			cells : [
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+			],
+
+			reset : function(){
+				const start = (m, n) => [...Array(m)].map(e => Array(n).fill(0));
+				game_info.cells = (start (20, 20));
+				$(".cell").css('background-color','yellow');
+				this.scores.player1 = 0;
+				this.scores.player2 = 0;
+				this.currentPlayer = 0;
+				$("#currentPlayer").text("Player 1");
+				updateUI();
+			},
+
+			p1Wins : function(){
+				this.scores.player1 += 1;
+				alert("Player 1 Wins");
+				this.currentPlayer = 1;
+				$("#currentPlayer").text("Player 2");
+				$(".cell").css('background-color','yellow');
+				const start = (m, n) => [...Array(m)].map(e => Array(n).fill(0));
+				game_info.cells = (start (20, 20));
+				updateUI();
+			},
+
+			p2Wins : function(){
+				this.scores.player2 += 1;
+				alert("Player 2 Wins");
+				this.currentPlayer = 0;
+				$("#currentPlayer").text("Player 1");
+				$(".cell").css('background-color','yellow');
+				const start = (m, n) => [...Array(m)].map(e => Array(n).fill(0));
+				game_info.cells = (start (20, 20));
+				updateUI();
+			}
+
+		};
+
+		var cellClick = function(x, y){
+			const cell = `id_${x}_${y}`;
+			const ccell = document.getElementById(cell);
+			const matrixElem = game_info.cells[y-1][x-1];
+
+			if (!matrixElem){
+
+				ccell.style.backgroundColor = colors[game_info.currentPlayer]
+				if (game_info.currentPlayer == PLAYER_1)
+				{
+
+					game_info.currentPlayer = PLAYER_2
+					$("#currentPlayer").text("Player 2");
+				}
+
+				else {
+
+					game_info.currentPlayer = PLAYER_1
+					$("#currentPlayer").text("Player 1");
+
+
+				}
+					game_info.cells[y-1][x-1] = game_info.currentPlayer + 1;
+
+
+			};
+		}
+
+
+		var updateUI = function(){
+			$("#p1score").text(game_info.scores.player1);
+			$("#p2score").text(game_info.scores.player2);
+		}
+
+
+		$(document).ready(function(){
+			$("#p1Wins").click(function(){
+				game_info.p1Wins();
+
+			});
+			$("#p2Wins").click(function(){
+				game_info.p2Wins();
+				
+			});
+			$("#reset").click(function(){
+				game_info.reset();
+
+			});
+		});
+
+	</script>
+</head>
+<body>
+	<div class="main_wrapper">
+		<div style="width: 480px; height: 480px; padding: 3px; background: black;">
+			<div class="cell" onclick="cellClick(1,1)" id="id_1_1" ></div>	
+			<div class="cell" onclick="cellClick(2,1)" id="id_2_1" ></div>	
+			<div class="cell" onclick="cellClick(3,1)" id="id_3_1" ></div>	
+			<div class="cell" onclick="cellClick(4,1)" id="id_4_1" ></div>	
+			<div class="cell" onclick="cellClick(5,1)" id="id_5_1" ></div>	
+			<div class="cell" onclick="cellClick(6,1)" id="id_6_1" ></div>	
+			<div class="cell" onclick="cellClick(7,1)" id="id_7_1" ></div>	
+			<div class="cell" onclick="cellClick(8,1)" id="id_8_1" ></div>	
+			<div class="cell" onclick="cellClick(9,1)" id="id_9_1" ></div>	
+			<div class="cell" onclick="cellClick(10,1)" id="id_10_1" ></div>	
+			<div class="cell" onclick="cellClick(11,1)" id="id_11_1" ></div>	
+			<div class="cell" onclick="cellClick(12,1)" id="id_12_1" ></div>	
+			<div class="cell" onclick="cellClick(13,1)" id="id_13_1" ></div>	
+			<div class="cell" onclick="cellClick(14,1)" id="id_14_1" ></div>	
+			<div class="cell" onclick="cellClick(15,1)" id="id_15_1" ></div>	
+			<div class="cell" onclick="cellClick(16,1)" id="id_16_1" ></div>	
+			<div class="cell" onclick="cellClick(17,1)" id="id_17_1" ></div>	
+			<div class="cell" onclick="cellClick(18,1)" id="id_18_1" ></div>	
+			<div class="cell" onclick="cellClick(19,1)" id="id_19_1" ></div>	
+			<div class="cell" onclick="cellClick(20,1)" id="id_20_1" ></div>	
+			<div class="cell" onclick="cellClick(1,2)" id="id_1_2" ></div>	
+			<div class="cell" onclick="cellClick(2,2)" id="id_2_2" ></div>	
+			<div class="cell" onclick="cellClick(3,2)" id="id_3_2" ></div>	
+			<div class="cell" onclick="cellClick(4,2)" id="id_4_2" ></div>	
+			<div class="cell" onclick="cellClick(5,2)" id="id_5_2" ></div>	
+			<div class="cell" onclick="cellClick(6,2)" id="id_6_2" ></div>	
+			<div class="cell" onclick="cellClick(7,2)" id="id_7_2" ></div>	
+			<div class="cell" onclick="cellClick(8,2)" id="id_8_2" ></div>	
+			<div class="cell" onclick="cellClick(9,2)" id="id_9_2" ></div>	
+			<div class="cell" onclick="cellClick(10,2)" id="id_10_2" ></div>	
+			<div class="cell" onclick="cellClick(11,2)" id="id_11_2" ></div>	
+			<div class="cell" onclick="cellClick(12,2)" id="id_12_2" ></div>	
+			<div class="cell" onclick="cellClick(13,2)" id="id_13_2" ></div>	
+			<div class="cell" onclick="cellClick(14,2)" id="id_14_2" ></div>	
+			<div class="cell" onclick="cellClick(15,2)" id="id_15_2" ></div>	
+			<div class="cell" onclick="cellClick(16,2)" id="id_16_2" ></div>	
+			<div class="cell" onclick="cellClick(17,2)" id="id_17_2" ></div>	
+			<div class="cell" onclick="cellClick(18,2)" id="id_18_2" ></div>	
+			<div class="cell" onclick="cellClick(19,2)" id="id_19_2" ></div>	
+			<div class="cell" onclick="cellClick(20,2)" id="id_20_2" ></div>	
+			<div class="cell" onclick="cellClick(1,3)" id="id_1_3" ></div>	
+			<div class="cell" onclick="cellClick(2,3)" id="id_2_3" ></div>	
+			<div class="cell" onclick="cellClick(3,3)" id="id_3_3" ></div>	
+			<div class="cell" onclick="cellClick(4,3)" id="id_4_3" ></div>	
+			<div class="cell" onclick="cellClick(5,3)" id="id_5_3" ></div>	
+			<div class="cell" onclick="cellClick(6,3)" id="id_6_3" ></div>	
+			<div class="cell" onclick="cellClick(7,3)" id="id_7_3" ></div>	
+			<div class="cell" onclick="cellClick(8,3)" id="id_8_3" ></div>	
+			<div class="cell" onclick="cellClick(9,3)" id="id_9_3" ></div>	
+			<div class="cell" onclick="cellClick(10,3)" id="id_10_3" ></div>	
+			<div class="cell" onclick="cellClick(11,3)" id="id_11_3" ></div>	
+			<div class="cell" onclick="cellClick(12,3)" id="id_12_3" ></div>	
+			<div class="cell" onclick="cellClick(13,3)" id="id_13_3" ></div>	
+			<div class="cell" onclick="cellClick(14,3)" id="id_14_3" ></div>	
+			<div class="cell" onclick="cellClick(15,3)" id="id_15_3" ></div>	
+			<div class="cell" onclick="cellClick(16,3)" id="id_16_3" ></div>	
+			<div class="cell" onclick="cellClick(17,3)" id="id_17_3" ></div>	
+			<div class="cell" onclick="cellClick(18,3)" id="id_18_3" ></div>	
+			<div class="cell" onclick="cellClick(19,3)" id="id_19_3" ></div>	
+			<div class="cell" onclick="cellClick(20,3)" id="id_20_3" ></div>	
+			<div class="cell" onclick="cellClick(1,4)" id="id_1_4" ></div>	
+			<div class="cell" onclick="cellClick(2,4)" id="id_2_4" ></div>	
+			<div class="cell" onclick="cellClick(3,4)" id="id_3_4" ></div>	
+			<div class="cell" onclick="cellClick(4,4)" id="id_4_4" ></div>	
+			<div class="cell" onclick="cellClick(5,4)" id="id_5_4" ></div>	
+			<div class="cell" onclick="cellClick(6,4)" id="id_6_4" ></div>	
+			<div class="cell" onclick="cellClick(7,4)" id="id_7_4" ></div>	
+			<div class="cell" onclick="cellClick(8,4)" id="id_8_4" ></div>	
+			<div class="cell" onclick="cellClick(9,4)" id="id_9_4" ></div>	
+			<div class="cell" onclick="cellClick(10,4)" id="id_10_4" ></div>	
+			<div class="cell" onclick="cellClick(11,4)" id="id_11_4" ></div>	
+			<div class="cell" onclick="cellClick(12,4)" id="id_12_4" ></div>	
+			<div class="cell" onclick="cellClick(13,4)" id="id_13_4" ></div>	
+			<div class="cell" onclick="cellClick(14,4)" id="id_14_4" ></div>	
+			<div class="cell" onclick="cellClick(15,4)" id="id_15_4" ></div>	
+			<div class="cell" onclick="cellClick(16,4)" id="id_16_4" ></div>	
+			<div class="cell" onclick="cellClick(17,4)" id="id_17_4" ></div>	
+			<div class="cell" onclick="cellClick(18,4)" id="id_18_4" ></div>	
+			<div class="cell" onclick="cellClick(19,4)" id="id_19_4" ></div>	
+			<div class="cell" onclick="cellClick(20,4)" id="id_20_4" ></div>	
+			<div class="cell" onclick="cellClick(1,5)" id="id_1_5" ></div>	
+			<div class="cell" onclick="cellClick(2,5)" id="id_2_5" ></div>	
+			<div class="cell" onclick="cellClick(3,5)" id="id_3_5" ></div>	
+			<div class="cell" onclick="cellClick(4,5)" id="id_4_5" ></div>	
+			<div class="cell" onclick="cellClick(5,5)" id="id_5_5" ></div>	
+			<div class="cell" onclick="cellClick(6,5)" id="id_6_5" ></div>	
+			<div class="cell" onclick="cellClick(7,5)" id="id_7_5" ></div>	
+			<div class="cell" onclick="cellClick(8,5)" id="id_8_5" ></div>	
+			<div class="cell" onclick="cellClick(9,5)" id="id_9_5" ></div>	
+			<div class="cell" onclick="cellClick(10,5)" id="id_10_5" ></div>	
+			<div class="cell" onclick="cellClick(11,5)" id="id_11_5" ></div>	
+			<div class="cell" onclick="cellClick(12,5)" id="id_12_5" ></div>	
+			<div class="cell" onclick="cellClick(13,5)" id="id_13_5" ></div>	
+			<div class="cell" onclick="cellClick(14,5)" id="id_14_5" ></div>	
+			<div class="cell" onclick="cellClick(15,5)" id="id_15_5" ></div>	
+			<div class="cell" onclick="cellClick(16,5)" id="id_16_5" ></div>	
+			<div class="cell" onclick="cellClick(17,5)" id="id_17_5" ></div>	
+			<div class="cell" onclick="cellClick(18,5)" id="id_18_5" ></div>	
+			<div class="cell" onclick="cellClick(19,5)" id="id_19_5" ></div>	
+			<div class="cell" onclick="cellClick(20,5)" id="id_20_5" ></div>	
+			<div class="cell" onclick="cellClick(1,6)" id="id_1_6" ></div>	
+			<div class="cell" onclick="cellClick(2,6)" id="id_2_6" ></div>	
+			<div class="cell" onclick="cellClick(3,6)" id="id_3_6" ></div>	
+			<div class="cell" onclick="cellClick(4,6)" id="id_4_6" ></div>	
+			<div class="cell" onclick="cellClick(5,6)" id="id_5_6" ></div>	
+			<div class="cell" onclick="cellClick(6,6)" id="id_6_6" ></div>	
+			<div class="cell" onclick="cellClick(7,6)" id="id_7_6" ></div>	
+			<div class="cell" onclick="cellClick(8,6)" id="id_8_6" ></div>	
+			<div class="cell" onclick="cellClick(9,6)" id="id_9_6" ></div>	
+			<div class="cell" onclick="cellClick(10,6)" id="id_10_6" ></div>	
+			<div class="cell" onclick="cellClick(11,6)" id="id_11_6" ></div>	
+			<div class="cell" onclick="cellClick(12,6)" id="id_12_6" ></div>	
+			<div class="cell" onclick="cellClick(13,6)" id="id_13_6" ></div>	
+			<div class="cell" onclick="cellClick(14,6)" id="id_14_6" ></div>	
+			<div class="cell" onclick="cellClick(15,6)" id="id_15_6" ></div>	
+			<div class="cell" onclick="cellClick(16,6)" id="id_16_6" ></div>	
+			<div class="cell" onclick="cellClick(17,6)" id="id_17_6" ></div>	
+			<div class="cell" onclick="cellClick(18,6)" id="id_18_6" ></div>	
+			<div class="cell" onclick="cellClick(19,6)" id="id_19_6" ></div>	
+			<div class="cell" onclick="cellClick(20,6)" id="id_20_6" ></div>	
+			<div class="cell" onclick="cellClick(1,7)" id="id_1_7" ></div>	
+			<div class="cell" onclick="cellClick(2,7)" id="id_2_7" ></div>	
+			<div class="cell" onclick="cellClick(3,7)" id="id_3_7" ></div>	
+			<div class="cell" onclick="cellClick(4,7)" id="id_4_7" ></div>	
+			<div class="cell" onclick="cellClick(5,7)" id="id_5_7" ></div>	
+			<div class="cell" onclick="cellClick(6,7)" id="id_6_7" ></div>	
+			<div class="cell" onclick="cellClick(7,7)" id="id_7_7" ></div>	
+			<div class="cell" onclick="cellClick(8,7)" id="id_8_7" ></div>	
+			<div class="cell" onclick="cellClick(9,7)" id="id_9_7" ></div>	
+			<div class="cell" onclick="cellClick(10,7)" id="id_10_7" ></div>	
+			<div class="cell" onclick="cellClick(11,7)" id="id_11_7" ></div>	
+			<div class="cell" onclick="cellClick(12,7)" id="id_12_7" ></div>	
+			<div class="cell" onclick="cellClick(13,7)" id="id_13_7" ></div>	
+			<div class="cell" onclick="cellClick(14,7)" id="id_14_7" ></div>	
+			<div class="cell" onclick="cellClick(15,7)" id="id_15_7" ></div>	
+			<div class="cell" onclick="cellClick(16,7)" id="id_16_7" ></div>	
+			<div class="cell" onclick="cellClick(17,7)" id="id_17_7" ></div>	
+			<div class="cell" onclick="cellClick(18,7)" id="id_18_7" ></div>	
+			<div class="cell" onclick="cellClick(19,7)" id="id_19_7" ></div>	
+			<div class="cell" onclick="cellClick(20,7)" id="id_20_7" ></div>	
+			<div class="cell" onclick="cellClick(1,8)" id="id_1_8" ></div>	
+			<div class="cell" onclick="cellClick(2,8)" id="id_2_8" ></div>	
+			<div class="cell" onclick="cellClick(3,8)" id="id_3_8" ></div>	
+			<div class="cell" onclick="cellClick(4,8)" id="id_4_8" ></div>	
+			<div class="cell" onclick="cellClick(5,8)" id="id_5_8" ></div>	
+			<div class="cell" onclick="cellClick(6,8)" id="id_6_8" ></div>	
+			<div class="cell" onclick="cellClick(7,8)" id="id_7_8" ></div>	
+			<div class="cell" onclick="cellClick(8,8)" id="id_8_8" ></div>	
+			<div class="cell" onclick="cellClick(9,8)" id="id_9_8" ></div>	
+			<div class="cell" onclick="cellClick(10,8)" id="id_10_8" ></div>	
+			<div class="cell" onclick="cellClick(11,8)" id="id_11_8" ></div>	
+			<div class="cell" onclick="cellClick(12,8)" id="id_12_8" ></div>	
+			<div class="cell" onclick="cellClick(13,8)" id="id_13_8" ></div>	
+			<div class="cell" onclick="cellClick(14,8)" id="id_14_8" ></div>	
+			<div class="cell" onclick="cellClick(15,8)" id="id_15_8" ></div>	
+			<div class="cell" onclick="cellClick(16,8)" id="id_16_8" ></div>	
+			<div class="cell" onclick="cellClick(17,8)" id="id_17_8" ></div>	
+			<div class="cell" onclick="cellClick(18,8)" id="id_18_8" ></div>	
+			<div class="cell" onclick="cellClick(19,8)" id="id_19_8" ></div>	
+			<div class="cell" onclick="cellClick(20,8)" id="id_20_8" ></div>	
+			<div class="cell" onclick="cellClick(1,9)" id="id_1_9" ></div>	
+			<div class="cell" onclick="cellClick(2,9)" id="id_2_9" ></div>	
+			<div class="cell" onclick="cellClick(3,9)" id="id_3_9" ></div>	
+			<div class="cell" onclick="cellClick(4,9)" id="id_4_9" ></div>	
+			<div class="cell" onclick="cellClick(5,9)" id="id_5_9" ></div>	
+			<div class="cell" onclick="cellClick(6,9)" id="id_6_9" ></div>	
+			<div class="cell" onclick="cellClick(7,9)" id="id_7_9" ></div>	
+			<div class="cell" onclick="cellClick(8,9)" id="id_8_9" ></div>	
+			<div class="cell" onclick="cellClick(9,9)" id="id_9_9" ></div>	
+			<div class="cell" onclick="cellClick(10,9)" id="id_10_9" ></div>	
+			<div class="cell" onclick="cellClick(11,9)" id="id_11_9" ></div>	
+			<div class="cell" onclick="cellClick(12,9)" id="id_12_9" ></div>	
+			<div class="cell" onclick="cellClick(13,9)" id="id_13_9" ></div>	
+			<div class="cell" onclick="cellClick(14,9)" id="id_14_9" ></div>	
+			<div class="cell" onclick="cellClick(15,9)" id="id_15_9" ></div>	
+			<div class="cell" onclick="cellClick(16,9)" id="id_16_9" ></div>	
+			<div class="cell" onclick="cellClick(17,9)" id="id_17_9" ></div>	
+			<div class="cell" onclick="cellClick(18,9)" id="id_18_9" ></div>	
+			<div class="cell" onclick="cellClick(19,9)" id="id_19_9" ></div>	
+			<div class="cell" onclick="cellClick(20,9)" id="id_20_9" ></div>	
+			<div class="cell" onclick="cellClick(1,10)" id="id_1_10" ></div>	
+			<div class="cell" onclick="cellClick(2,10)" id="id_2_10" ></div>	
+			<div class="cell" onclick="cellClick(3,10)" id="id_3_10" ></div>	
+			<div class="cell" onclick="cellClick(4,10)" id="id_4_10" ></div>	
+			<div class="cell" onclick="cellClick(5,10)" id="id_5_10" ></div>	
+			<div class="cell" onclick="cellClick(6,10)" id="id_6_10" ></div>	
+			<div class="cell" onclick="cellClick(7,10)" id="id_7_10" ></div>	
+			<div class="cell" onclick="cellClick(8,10)" id="id_8_10" ></div>	
+			<div class="cell" onclick="cellClick(9,10)" id="id_9_10" ></div>	
+			<div class="cell" onclick="cellClick(10,10)" id="id_10_10" ></div>	
+			<div class="cell" onclick="cellClick(11,10)" id="id_11_10" ></div>	
+			<div class="cell" onclick="cellClick(12,10)" id="id_12_10" ></div>	
+			<div class="cell" onclick="cellClick(13,10)" id="id_13_10" ></div>	
+			<div class="cell" onclick="cellClick(14,10)" id="id_14_10" ></div>	
+			<div class="cell" onclick="cellClick(15,10)" id="id_15_10" ></div>	
+			<div class="cell" onclick="cellClick(16,10)" id="id_16_10" ></div>	
+			<div class="cell" onclick="cellClick(17,10)" id="id_17_10" ></div>	
+			<div class="cell" onclick="cellClick(18,10)" id="id_18_10" ></div>	
+			<div class="cell" onclick="cellClick(19,10)" id="id_19_10" ></div>	
+			<div class="cell" onclick="cellClick(20,10)" id="id_20_10" ></div>	
+			<div class="cell" onclick="cellClick(1,11)" id="id_1_11" ></div>	
+			<div class="cell" onclick="cellClick(2,11)" id="id_2_11" ></div>	
+			<div class="cell" onclick="cellClick(3,11)" id="id_3_11" ></div>	
+			<div class="cell" onclick="cellClick(4,11)" id="id_4_11" ></div>	
+			<div class="cell" onclick="cellClick(5,11)" id="id_5_11" ></div>	
+			<div class="cell" onclick="cellClick(6,11)" id="id_6_11" ></div>	
+			<div class="cell" onclick="cellClick(7,11)" id="id_7_11" ></div>	
+			<div class="cell" onclick="cellClick(8,11)" id="id_8_11" ></div>	
+			<div class="cell" onclick="cellClick(9,11)" id="id_9_11" ></div>	
+			<div class="cell" onclick="cellClick(10,11)" id="id_10_11" ></div>	
+			<div class="cell" onclick="cellClick(11,11)" id="id_11_11" ></div>	
+			<div class="cell" onclick="cellClick(12,11)" id="id_12_11" ></div>	
+			<div class="cell" onclick="cellClick(13,11)" id="id_13_11" ></div>	
+			<div class="cell" onclick="cellClick(14,11)" id="id_14_11" ></div>	
+			<div class="cell" onclick="cellClick(15,11)" id="id_15_11" ></div>	
+			<div class="cell" onclick="cellClick(16,11)" id="id_16_11" ></div>	
+			<div class="cell" onclick="cellClick(17,11)" id="id_17_11" ></div>	
+			<div class="cell" onclick="cellClick(18,11)" id="id_18_11" ></div>	
+			<div class="cell" onclick="cellClick(19,11)" id="id_19_11" ></div>	
+			<div class="cell" onclick="cellClick(20,11)" id="id_20_11" ></div>	
+			<div class="cell" onclick="cellClick(1,12)" id="id_1_12" ></div>	
+			<div class="cell" onclick="cellClick(2,12)" id="id_2_12" ></div>	
+			<div class="cell" onclick="cellClick(3,12)" id="id_3_12" ></div>	
+			<div class="cell" onclick="cellClick(4,12)" id="id_4_12" ></div>	
+			<div class="cell" onclick="cellClick(5,12)" id="id_5_12" ></div>	
+			<div class="cell" onclick="cellClick(6,12)" id="id_6_12" ></div>	
+			<div class="cell" onclick="cellClick(7,12)" id="id_7_12" ></div>	
+			<div class="cell" onclick="cellClick(8,12)" id="id_8_12" ></div>	
+			<div class="cell" onclick="cellClick(9,12)" id="id_9_12" ></div>	
+			<div class="cell" onclick="cellClick(10,12)" id="id_10_12" ></div>	
+			<div class="cell" onclick="cellClick(11,12)" id="id_11_12" ></div>	
+			<div class="cell" onclick="cellClick(12,12)" id="id_12_12" ></div>	
+			<div class="cell" onclick="cellClick(13,12)" id="id_13_12" ></div>	
+			<div class="cell" onclick="cellClick(14,12)" id="id_14_12" ></div>	
+			<div class="cell" onclick="cellClick(15,12)" id="id_15_12" ></div>	
+			<div class="cell" onclick="cellClick(16,12)" id="id_16_12" ></div>	
+			<div class="cell" onclick="cellClick(17,12)" id="id_17_12" ></div>	
+			<div class="cell" onclick="cellClick(18,12)" id="id_18_12" ></div>	
+			<div class="cell" onclick="cellClick(19,12)" id="id_19_12" ></div>	
+			<div class="cell" onclick="cellClick(20,12)" id="id_20_12" ></div>	
+			<div class="cell" onclick="cellClick(1,13)" id="id_1_13" ></div>	
+			<div class="cell" onclick="cellClick(2,13)" id="id_2_13" ></div>	
+			<div class="cell" onclick="cellClick(3,13)" id="id_3_13" ></div>	
+			<div class="cell" onclick="cellClick(4,13)" id="id_4_13" ></div>	
+			<div class="cell" onclick="cellClick(5,13)" id="id_5_13" ></div>	
+			<div class="cell" onclick="cellClick(6,13)" id="id_6_13" ></div>	
+			<div class="cell" onclick="cellClick(7,13)" id="id_7_13" ></div>	
+			<div class="cell" onclick="cellClick(8,13)" id="id_8_13" ></div>	
+			<div class="cell" onclick="cellClick(9,13)" id="id_9_13" ></div>	
+			<div class="cell" onclick="cellClick(10,13)" id="id_10_13" ></div>	
+			<div class="cell" onclick="cellClick(11,13)" id="id_11_13" ></div>	
+			<div class="cell" onclick="cellClick(12,13)" id="id_12_13" ></div>	
+			<div class="cell" onclick="cellClick(13,13)" id="id_13_13" ></div>	
+			<div class="cell" onclick="cellClick(14,13)" id="id_14_13" ></div>	
+			<div class="cell" onclick="cellClick(15,13)" id="id_15_13" ></div>	
+			<div class="cell" onclick="cellClick(16,13)" id="id_16_13" ></div>	
+			<div class="cell" onclick="cellClick(17,13)" id="id_17_13" ></div>	
+			<div class="cell" onclick="cellClick(18,13)" id="id_18_13" ></div>	
+			<div class="cell" onclick="cellClick(19,13)" id="id_19_13" ></div>	
+			<div class="cell" onclick="cellClick(20,13)" id="id_20_13" ></div>	
+			<div class="cell" onclick="cellClick(1,14)" id="id_1_14" ></div>	
+			<div class="cell" onclick="cellClick(2,14)" id="id_2_14" ></div>	
+			<div class="cell" onclick="cellClick(3,14)" id="id_3_14" ></div>	
+			<div class="cell" onclick="cellClick(4,14)" id="id_4_14" ></div>	
+			<div class="cell" onclick="cellClick(5,14)" id="id_5_14" ></div>	
+			<div class="cell" onclick="cellClick(6,14)" id="id_6_14" ></div>	
+			<div class="cell" onclick="cellClick(7,14)" id="id_7_14" ></div>	
+			<div class="cell" onclick="cellClick(8,14)" id="id_8_14" ></div>	
+			<div class="cell" onclick="cellClick(9,14)" id="id_9_14" ></div>	
+			<div class="cell" onclick="cellClick(10,14)" id="id_10_14" ></div>	
+			<div class="cell" onclick="cellClick(11,14)" id="id_11_14" ></div>	
+			<div class="cell" onclick="cellClick(12,14)" id="id_12_14" ></div>	
+			<div class="cell" onclick="cellClick(13,14)" id="id_13_14" ></div>	
+			<div class="cell" onclick="cellClick(14,14)" id="id_14_14" ></div>	
+			<div class="cell" onclick="cellClick(15,14)" id="id_15_14" ></div>	
+			<div class="cell" onclick="cellClick(16,14)" id="id_16_14" ></div>	
+			<div class="cell" onclick="cellClick(17,14)" id="id_17_14" ></div>	
+			<div class="cell" onclick="cellClick(18,14)" id="id_18_14" ></div>	
+			<div class="cell" onclick="cellClick(19,14)" id="id_19_14" ></div>	
+			<div class="cell" onclick="cellClick(20,14)" id="id_20_14" ></div>	
+			<div class="cell" onclick="cellClick(1,15)" id="id_1_15" ></div>	
+			<div class="cell" onclick="cellClick(2,15)" id="id_2_15" ></div>	
+			<div class="cell" onclick="cellClick(3,15)" id="id_3_15" ></div>	
+			<div class="cell" onclick="cellClick(4,15)" id="id_4_15" ></div>	
+			<div class="cell" onclick="cellClick(5,15)" id="id_5_15" ></div>	
+			<div class="cell" onclick="cellClick(6,15)" id="id_6_15" ></div>	
+			<div class="cell" onclick="cellClick(7,15)" id="id_7_15" ></div>	
+			<div class="cell" onclick="cellClick(8,15)" id="id_8_15" ></div>	
+			<div class="cell" onclick="cellClick(9,15)" id="id_9_15" ></div>	
+			<div class="cell" onclick="cellClick(10,15)" id="id_10_15" ></div>	
+			<div class="cell" onclick="cellClick(11,15)" id="id_11_15" ></div>	
+			<div class="cell" onclick="cellClick(12,15)" id="id_12_15" ></div>	
+			<div class="cell" onclick="cellClick(13,15)" id="id_13_15" ></div>	
+			<div class="cell" onclick="cellClick(14,15)" id="id_14_15" ></div>	
+			<div class="cell" onclick="cellClick(15,15)" id="id_15_15" ></div>	
+			<div class="cell" onclick="cellClick(16,15)" id="id_16_15" ></div>	
+			<div class="cell" onclick="cellClick(17,15)" id="id_17_15" ></div>	
+			<div class="cell" onclick="cellClick(18,15)" id="id_18_15" ></div>	
+			<div class="cell" onclick="cellClick(19,15)" id="id_19_15" ></div>	
+			<div class="cell" onclick="cellClick(20,15)" id="id_20_15" ></div>	
+			<div class="cell" onclick="cellClick(1,16)" id="id_1_16" ></div>	
+			<div class="cell" onclick="cellClick(2,16)" id="id_2_16" ></div>	
+			<div class="cell" onclick="cellClick(3,16)" id="id_3_16" ></div>	
+			<div class="cell" onclick="cellClick(4,16)" id="id_4_16" ></div>	
+			<div class="cell" onclick="cellClick(5,16)" id="id_5_16" ></div>	
+			<div class="cell" onclick="cellClick(6,16)" id="id_6_16" ></div>	
+			<div class="cell" onclick="cellClick(7,16)" id="id_7_16" ></div>	
+			<div class="cell" onclick="cellClick(8,16)" id="id_8_16" ></div>	
+			<div class="cell" onclick="cellClick(9,16)" id="id_9_16" ></div>	
+			<div class="cell" onclick="cellClick(10,16)" id="id_10_16" ></div>	
+			<div class="cell" onclick="cellClick(11,16)" id="id_11_16" ></div>	
+			<div class="cell" onclick="cellClick(12,16)" id="id_12_16" ></div>	
+			<div class="cell" onclick="cellClick(13,16)" id="id_13_16" ></div>	
+			<div class="cell" onclick="cellClick(14,16)" id="id_14_16" ></div>	
+			<div class="cell" onclick="cellClick(15,16)" id="id_15_16" ></div>	
+			<div class="cell" onclick="cellClick(16,16)" id="id_16_16" ></div>	
+			<div class="cell" onclick="cellClick(17,16)" id="id_17_16" ></div>	
+			<div class="cell" onclick="cellClick(18,16)" id="id_18_16" ></div>	
+			<div class="cell" onclick="cellClick(19,16)" id="id_19_16" ></div>	
+			<div class="cell" onclick="cellClick(20,16)" id="id_20_16" ></div>	
+			<div class="cell" onclick="cellClick(1,17)" id="id_1_17" ></div>	
+			<div class="cell" onclick="cellClick(2,17)" id="id_2_17" ></div>	
+			<div class="cell" onclick="cellClick(3,17)" id="id_3_17" ></div>	
+			<div class="cell" onclick="cellClick(4,17)" id="id_4_17" ></div>	
+			<div class="cell" onclick="cellClick(5,17)" id="id_5_17" ></div>	
+			<div class="cell" onclick="cellClick(6,17)" id="id_6_17" ></div>	
+			<div class="cell" onclick="cellClick(7,17)" id="id_7_17" ></div>	
+			<div class="cell" onclick="cellClick(8,17)" id="id_8_17" ></div>	
+			<div class="cell" onclick="cellClick(9,17)" id="id_9_17" ></div>	
+			<div class="cell" onclick="cellClick(10,17)" id="id_10_17" ></div>	
+			<div class="cell" onclick="cellClick(11,17)" id="id_11_17" ></div>	
+			<div class="cell" onclick="cellClick(12,17)" id="id_12_17" ></div>	
+			<div class="cell" onclick="cellClick(13,17)" id="id_13_17" ></div>	
+			<div class="cell" onclick="cellClick(14,17)" id="id_14_17" ></div>	
+			<div class="cell" onclick="cellClick(15,17)" id="id_15_17" ></div>	
+			<div class="cell" onclick="cellClick(16,17)" id="id_16_17" ></div>	
+			<div class="cell" onclick="cellClick(17,17)" id="id_17_17" ></div>	
+			<div class="cell" onclick="cellClick(18,17)" id="id_18_17" ></div>	
+			<div class="cell" onclick="cellClick(19,17)" id="id_19_17" ></div>	
+			<div class="cell" onclick="cellClick(20,17)" id="id_20_17" ></div>	
+			<div class="cell" onclick="cellClick(1,18)" id="id_1_18" ></div>	
+			<div class="cell" onclick="cellClick(2,18)" id="id_2_18" ></div>	
+			<div class="cell" onclick="cellClick(3,18)" id="id_3_18" ></div>	
+			<div class="cell" onclick="cellClick(4,18)" id="id_4_18" ></div>	
+			<div class="cell" onclick="cellClick(5,18)" id="id_5_18" ></div>	
+			<div class="cell" onclick="cellClick(6,18)" id="id_6_18" ></div>	
+			<div class="cell" onclick="cellClick(7,18)" id="id_7_18" ></div>	
+			<div class="cell" onclick="cellClick(8,18)" id="id_8_18" ></div>	
+			<div class="cell" onclick="cellClick(9,18)" id="id_9_18" ></div>	
+			<div class="cell" onclick="cellClick(10,18)" id="id_10_18" ></div>	
+			<div class="cell" onclick="cellClick(11,18)" id="id_11_18" ></div>	
+			<div class="cell" onclick="cellClick(12,18)" id="id_12_18" ></div>	
+			<div class="cell" onclick="cellClick(13,18)" id="id_13_18" ></div>	
+			<div class="cell" onclick="cellClick(14,18)" id="id_14_18" ></div>	
+			<div class="cell" onclick="cellClick(15,18)" id="id_15_18" ></div>	
+			<div class="cell" onclick="cellClick(16,18)" id="id_16_18" ></div>	
+			<div class="cell" onclick="cellClick(17,18)" id="id_17_18" ></div>	
+			<div class="cell" onclick="cellClick(18,18)" id="id_18_18" ></div>	
+			<div class="cell" onclick="cellClick(19,18)" id="id_19_18" ></div>	
+			<div class="cell" onclick="cellClick(20,18)" id="id_20_18" ></div>	
+			<div class="cell" onclick="cellClick(1,19)" id="id_1_19" ></div>	
+			<div class="cell" onclick="cellClick(2,19)" id="id_2_19" ></div>	
+			<div class="cell" onclick="cellClick(3,19)" id="id_3_19" ></div>	
+			<div class="cell" onclick="cellClick(4,19)" id="id_4_19" ></div>	
+			<div class="cell" onclick="cellClick(5,19)" id="id_5_19" ></div>	
+			<div class="cell" onclick="cellClick(6,19)" id="id_6_19" ></div>	
+			<div class="cell" onclick="cellClick(7,19)" id="id_7_19" ></div>	
+			<div class="cell" onclick="cellClick(8,19)" id="id_8_19" ></div>	
+			<div class="cell" onclick="cellClick(9,19)" id="id_9_19" ></div>	
+			<div class="cell" onclick="cellClick(10,19)" id="id_10_19" ></div>	
+			<div class="cell" onclick="cellClick(11,19)" id="id_11_19" ></div>	
+			<div class="cell" onclick="cellClick(12,19)" id="id_12_19" ></div>	
+			<div class="cell" onclick="cellClick(13,19)" id="id_13_19" ></div>	
+			<div class="cell" onclick="cellClick(14,19)" id="id_14_19" ></div>	
+			<div class="cell" onclick="cellClick(15,19)" id="id_15_19" ></div>	
+			<div class="cell" onclick="cellClick(16,19)" id="id_16_19" ></div>	
+			<div class="cell" onclick="cellClick(17,19)" id="id_17_19" ></div>	
+			<div class="cell" onclick="cellClick(18,19)" id="id_18_19" ></div>	
+			<div class="cell" onclick="cellClick(19,19)" id="id_19_19" ></div>	
+			<div class="cell" onclick="cellClick(20,19)" id="id_20_19" ></div>	
+			<div class="cell" onclick="cellClick(1,20)" id="id_1_20" ></div>	
+			<div class="cell" onclick="cellClick(2,20)" id="id_2_20" ></div>	
+			<div class="cell" onclick="cellClick(3,20)" id="id_3_20" ></div>	
+			<div class="cell" onclick="cellClick(4,20)" id="id_4_20" ></div>	
+			<div class="cell" onclick="cellClick(5,20)" id="id_5_20" ></div>	
+			<div class="cell" onclick="cellClick(6,20)" id="id_6_20" ></div>	
+			<div class="cell" onclick="cellClick(7,20)" id="id_7_20" ></div>	
+			<div class="cell" onclick="cellClick(8,20)" id="id_8_20" ></div>	
+			<div class="cell" onclick="cellClick(9,20)" id="id_9_20" ></div>	
+			<div class="cell" onclick="cellClick(10,20)" id="id_10_20" ></div>	
+			<div class="cell" onclick="cellClick(11,20)" id="id_11_20" ></div>	
+			<div class="cell" onclick="cellClick(12,20)" id="id_12_20" ></div>	
+			<div class="cell" onclick="cellClick(13,20)" id="id_13_20" ></div>	
+			<div class="cell" onclick="cellClick(14,20)" id="id_14_20" ></div>	
+			<div class="cell" onclick="cellClick(15,20)" id="id_15_20" ></div>	
+			<div class="cell" onclick="cellClick(16,20)" id="id_16_20" ></div>	
+			<div class="cell" onclick="cellClick(17,20)" id="id_17_20" ></div>	
+			<div class="cell" onclick="cellClick(18,20)" id="id_18_20" ></div>	
+			<div class="cell" onclick="cellClick(19,20)" id="id_19_20" ></div>	
+			<div class="cell" onclick="cellClick(20,20)" id="id_20_20" ></div>	
+		</div>
+		<div style="width: 480px; height: 30px; padding: 3px; background: green; font-size: 18px; font-weight: bold; color: white;">
+			<span>Current Player:</span>
+			<span id="currentPlayer">Player 1</span>
+		</div>
+		<div style="width: 480px; height: 30px; padding: 3px; background: orange; font-size: 18px; font-weight: bold; color: white;">
+			<div style="width: 240px; height: 30px; padding: 0px; background: orange; font-size: 18px; font-weight: bold; color: white; float: left;">
+				<span>Player 1 Score:</span>
+				<span id="p1score" >0</span>
+			</div>
+			<div style="width: 240px; height: 30px; padding: 0px; background: orange; font-size: 18px; font-weight: bold; color: white; float: left;">
+				<span>Player 2 Score:</span>
+				<span id="p2score">0</span>
+			</div>
+		</div>
+		<div style="width: 480px; height: 30px; padding: 3px; background: orange; font-size: 18px; font-weight: bold; color: white;">
+			<div style="width: 240px; height: 30px; padding: 0px; background: orange; font-size: 18px; font-weight: bold; color: white; float: left;">
+				<input id="p1Wins" type="button" value="Player 1 Wins" style="width: 240px; height: 30px;">
+			</div>
+			<div style="width: 240px; height: 30px; padding: 0px; background: orange; font-size: 18px; font-weight: bold; color: white; float: left;">
+				<input id="p2Wins" type="button" value="Player 2 Wins" style="width: 240px; height: 30px;">
+			</div>
+		</div>
+
+		<input type="button" value="RESET" id="reset" style="width: 486px; height: 30px;">
+	</div>
+</body>
+</html>
